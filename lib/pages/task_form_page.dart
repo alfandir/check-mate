@@ -142,141 +142,153 @@ class _TaskFormPageState extends State<TaskFormPage> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        child: Card(
-          elevation: 3,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.info_outline, color: Colors.blue),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Jika aktivitas ini berulang, tambahkan lebih dari satu tanggal di bawah.',
+                        style: TextStyle(color: Colors.blue[900]),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Bagian tanggal
+              Text("Tanggal Aktivitas", style: theme.textTheme.titleMedium),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: -6,
+                children: selectedDates.map((d) {
+                  return Chip(
+                    label:
+                        Text(DateFormat('EEE, dd MMM yyyy', 'id_ID').format(d)),
+                    backgroundColor: Colors.blue.shade50,
+                    onDeleted: () => _removeDate(d),
+                    deleteIconColor: Colors.red,
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: _pickDate,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text("Tambah Tanggal"),
+                ),
+              ),
+              const Divider(height: 32),
+
+              // Bagian waktu
+              Text("Waktu Aktivitas", style: theme.textTheme.titleMedium),
+              const SizedBox(height: 8),
+              Row(
                 children: [
-                  // Bagian tanggal
-                  Text("Tanggal Aktivitas", style: theme.textTheme.titleMedium),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: -6,
-                    children: selectedDates.map((d) {
-                      return Chip(
-                        label: Text(
-                            DateFormat('EEE, dd MMM yyyy', 'id_ID').format(d)),
-                        backgroundColor: Colors.blue.shade50,
-                        onDeleted: () => _removeDate(d),
-                        deleteIconColor: Colors.red,
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton.icon(
-                      onPressed: _pickDate,
-                      icon: const Icon(Icons.add, size: 18),
-                      label: const Text("Tambah Tanggal"),
-                    ),
-                  ),
-                  const Divider(height: 32),
-
-                  // Bagian waktu
-                  Text("Waktu Aktivitas", style: theme.textTheme.titleMedium),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () => _pickTime(isStart: true),
-                          icon: const Icon(Icons.play_arrow),
-                          label: Text(startTime == null
-                              ? "Mulai"
-                              : startTime!.format(context)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green.shade50,
-                            foregroundColor: Colors.green.shade700,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () => _pickTime(isStart: false),
-                          icon: const Icon(Icons.stop),
-                          label: Text(endTime == null
-                              ? "Selesai"
-                              : endTime!.format(context)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red.shade50,
-                            foregroundColor: Colors.red.shade700,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    duration > 0
-                        ? "Durasi: $duration menit"
-                        : "Durasi belum dihitung",
-                    style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontStyle: FontStyle.italic,
-                        fontSize: 13),
-                  ),
-                  const Divider(height: 32),
-
-                  // Aktivitas
-                  TextFormField(
-                    controller: activityCtrl,
-                    decoration: InputDecoration(
-                      labelText: "Nama Aktivitas",
-                      prefixIcon: const Icon(Icons.task_alt_outlined),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    validator: (v) =>
-                        v == null || v.isEmpty ? "Wajib diisi" : null,
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Catatan
-                  TextFormField(
-                    controller: noteCtrl,
-                    decoration: InputDecoration(
-                      labelText: "Catatan (opsional)",
-                      prefixIcon: const Icon(Icons.note_outlined),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    maxLines: 3,
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Tombol simpan
-                  SizedBox(
-                    width: double.infinity,
+                  Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: _save,
-                      icon: const Icon(Icons.save_outlined),
-                      label: const Text("Simpan Aktivitas"),
+                      onPressed: () => _pickTime(isStart: true),
+                      icon: const Icon(Icons.play_arrow),
+                      label: Text(startTime == null
+                          ? "Mulai"
+                          : startTime!.format(context)),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        backgroundColor: Colors.green.shade50,
+                        foregroundColor: Colors.green.shade700,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        elevation: 2,
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
-                  )
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _pickTime(isStart: false),
+                      icon: const Icon(Icons.stop),
+                      label: Text(endTime == null
+                          ? "Selesai"
+                          : endTime!.format(context)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade50,
+                        foregroundColor: Colors.red.shade700,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
+              const SizedBox(height: 12),
+              Text(
+                duration > 0
+                    ? "Durasi: $duration menit"
+                    : "Durasi belum dihitung",
+                style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 13),
+              ),
+              const Divider(height: 32),
+
+              // Aktivitas
+              TextFormField(
+                controller: activityCtrl,
+                decoration: InputDecoration(
+                  labelText: "Nama Aktivitas",
+                  prefixIcon: const Icon(Icons.task_alt_outlined),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                validator: (v) => v == null || v.isEmpty ? "Wajib diisi" : null,
+              ),
+              const SizedBox(height: 16),
+
+              // Catatan
+              TextFormField(
+                controller: noteCtrl,
+                decoration: InputDecoration(
+                  labelText: "Catatan (opsional)",
+                  prefixIcon: const Icon(Icons.note_outlined),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 24),
+
+              // Tombol simpan
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _save,
+                  icon: const Icon(Icons.save_outlined),
+                  label: const Text("Simpan Aktivitas"),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    elevation: 2,
+                  ),
+                ),
+              )
+            ],
           ),
         ),
       ),
