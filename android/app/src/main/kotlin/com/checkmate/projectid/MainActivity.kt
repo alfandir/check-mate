@@ -1,4 +1,4 @@
-package com.example.routine_isar_app
+package com.checkmate.projectid
 
 import io.flutter.embedding.android.FlutterActivity
 
